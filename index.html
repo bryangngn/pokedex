@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Pokédex Pro</title>
+<title>Pokédex Pro - Eevee Fix</title>
 <style>
 :root {
     --bg: #0b0f14;
@@ -111,20 +111,18 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
 
 .section-title { font-size: 0.7rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin: 15px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 4px; }
 
-/* NUEVO ESTILO EVOLUCIÓN */
-.evo-chain {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
+/* EVOLUCIÓN MEJORADA */
+.evo-container {
     background: #0d1117;
     padding: 12px;
     border-radius: 12px;
     border: 1px dashed #30363d;
+    font-size: 0.85rem;
+    line-height: 1.6;
 }
-.evo-step { font-size: 0.85rem; font-weight: bold; color: #fff; text-transform: capitalize; }
-.evo-arrow { color: var(--accent); font-weight: bold; }
+.evo-group { display: block; margin-bottom: 5px; }
+.current-evo { color: var(--accent); font-weight: bold; border-bottom: 1px solid var(--accent); }
+.evo-name { text-transform: capitalize; font-weight: 500; }
 
 /* Stats */
 .stat-row { margin-bottom: 8px; text-align: left; }
@@ -218,14 +216,19 @@ function filterList(val) {
     renderSidebar();
 }
 
-// Función para procesar la cadena evolutiva
-function getEvoChain(chain, result = []) {
-    result.push(formatName(chain.species.name));
+// NUEVA FUNCIÓN PARA PROCESAR TODA LA CADENA (Especial para Eevee)
+function buildEvoUI(chain, currentName) {
+    let base = formatName(chain.species.name);
+    let isCurrent = (base.toLowerCase() === currentName.toLowerCase());
+    let html = `<span class="${isCurrent ? 'current-evo' : 'evo-name'}">${base}</span>`;
+
     if (chain.evolves_to.length > 0) {
-        // Tomamos la primera evolución posible para mantener la simplicidad visual
-        getEvoChain(chain.evolves_to[0], result);
+        html += ` → <div class="evo-group">`;
+        let evos = chain.evolves_to.map(e => buildEvoUI(e, currentName));
+        html += evos.join(', ');
+        html += `</div>`;
     }
-    return result;
+    return html;
 }
 
 async function showPokemon(id) {
@@ -236,7 +239,7 @@ async function showPokemon(id) {
         const s = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then(r => r.json());
         const e = await fetch(s.evolution_chain.url).then(r => r.json());
         
-        const evoArray = getEvoChain(e.chain);
+        const evoHTML = buildEvoUI(e.chain, p.name);
         const desc = s.flavor_text_entries.find(en => en.language.name === 'es')?.flavor_text.replace(/\f/g, ' ') || "Sin descripción.";
 
         cardEl.innerHTML = `
@@ -247,12 +250,9 @@ async function showPokemon(id) {
             
             <div class="description">"${desc}"</div>
 
-            <div class="section-title">Línea Evolutiva</div>
-            <div class="evo-chain">
-                ${evoArray.map((name, i) => `
-                    <span class="evo-step">${name}</span>
-                    ${i < evoArray.length - 1 ? '<span class="evo-arrow">→</span>' : ''}
-                `).join('')}
+            <div class="section-title">Cadena Evolutiva</div>
+            <div class="evo-container">
+                ${evoHTML}
             </div>
 
             <div class="section-title">Estadísticas</div>
