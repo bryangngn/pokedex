@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pokédex Pro+</title>
+<title>Pokédex Pro</title>
 <style>
 :root {
     --bg: #0b0f14;
@@ -11,33 +11,31 @@
     --accent: #ff3b3b;
     --text: #e6edf3;
     --sidebar: #0d1117;
-    --type-bg: #2b6cb0;
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
     overflow: hidden;
 }
 
 /* --- CABECERA --- */
-.header-logo {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 12px 0;
+header {
     background: var(--bg);
     border-bottom: 1px solid #30363d;
+    padding: 10px;
+    text-align: center;
+    z-index: 100;
 }
-.header-logo img { height: 40px; cursor: pointer; }
+header img { height: 35px; cursor: pointer; }
 
 .hidden { display: none !important; }
 
-/* --- HOME --- */
+/* --- HOME REGIONES --- */
 .home {
-    height: calc(100vh - 65px);
+    height: calc(100vh - 60px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -46,10 +44,10 @@ body {
 }
 .region-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
     width: 100%;
-    max-width: 1000px;
+    max-width: 900px;
 }
 .region-card {
     background: var(--card);
@@ -60,136 +58,143 @@ body {
     border: 1px solid #30363d;
 }
 
-/* --- LAYOUT RESPONSIVO --- */
-.layout { display: flex; height: calc(100vh - 65px); }
+/* --- LAYOUT DINÁMICO --- */
+.layout { display: flex; height: calc(100vh - 56px); flex-direction: row; }
 
+/* Sidebar (PC) / Topbar (Móvil) */
 .sidebar {
-    width: 280px;
+    width: 250px;
     background: var(--sidebar);
     border-right: 1px solid #30363d;
     display: flex;
     flex-direction: column;
-    transition: width 0.3s ease;
-}
-
-/* AJUSTE PARA MÓVIL */
-@media (max-width: 768px) {
-    .sidebar { width: 115px; } /* Sidebar más ancha para que quepa el nombre */
-    .poke-item { 
-        padding: 10px 8px !important; 
-        font-size: 0.75rem !important; 
-        text-align: center;
-        display: flex;
-        flex-direction: column; /* Número arriba, nombre abajo */
-        align-items: center;
-    }
-    .poke-item strong { 
-        display: block; 
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100px;
-    }
 }
 
 .sidebar-tools { padding: 10px; border-bottom: 1px solid #30363d; }
-.btn-back { width: 100%; padding: 8px; margin-bottom: 8px; background: #30363d; color: white; border: none; border-radius: 4px; cursor: pointer; }
-input { width: 100%; padding: 8px; box-sizing: border-box; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; font-size: 14px; }
+.btn-back { width: 100%; padding: 8px; margin-bottom: 8px; background: #30363d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0b0f14; color: white; box-sizing: border-box; }
 
 #list { flex: 1; overflow-y: auto; }
-.poke-item { padding: 12px 15px; border-bottom: 1px solid #21262d; cursor: pointer; font-size: 0.9rem; }
-.poke-item:hover { background: #161b22; }
-.poke-item.active { background: #1c2128; border-left: 4px solid var(--accent); }
+.poke-item { padding: 12px 15px; border-bottom: 1px solid #21262d; cursor: pointer; font-size: 0.95rem; font-weight: 500; }
+.poke-item.active { background: #1c2128; border-left: 4px solid var(--accent); color: var(--accent); }
 
-/* --- DETALLE --- */
-.main { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 15px; overflow-y: auto; }
+/* --- RESPONSIVE MÓVIL --- */
+@media (max-width: 768px) {
+    .layout { flex-direction: column; }
+    .sidebar { 
+        width: 100%; 
+        height: auto; 
+        border-right: none; 
+        border-bottom: 1px solid #30363d; 
+    }
+    #list { 
+        display: flex; 
+        overflow-x: auto; 
+        overflow-y: hidden; 
+        white-space: nowrap; 
+        padding: 5px 0;
+        -webkit-overflow-scrolling: touch;
+    }
+    .poke-item { 
+        display: inline-block; 
+        padding: 8px 20px; 
+        border-bottom: none; 
+        border-right: 1px solid #21262d;
+        font-size: 0.85rem;
+    }
+    .poke-item.active { border-left: none; border-bottom: 3px solid var(--accent); }
+    .main { padding: 10px !important; }
+}
 
+/* --- FICHA POKEMON --- */
+.main { flex: 1; display: flex; justify-content: center; padding: 25px; overflow-y: auto; }
 .card {
     background: var(--card);
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 20px;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     text-align: center;
     border: 1px solid #30363d;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    height: fit-content;
 }
+.card img { width: 180px; height: 180px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); }
+.types { display: flex; justify-content: center; gap: 8px; margin: 15px 0; }
+.types span { padding: 5px 15px; border-radius: 30px; font-size: 0.75rem; font-weight: bold; background: #2b6cb0; text-transform: uppercase; }
+.description { font-size: 0.9rem; color: #abb2bf; margin: 15px 0; line-height: 1.5; font-style: italic; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
+.section-title { font-size: 0.7rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin: 20px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 5px; }
+.evolution-box { background: #0d1117; padding: 12px; border-radius: 8px; font-size: 0.9rem; border: 1px dashed #444; }
 
-.card img { width: 150px; height: 150px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
-
-.types { display: flex; justify-content: center; gap: 6px; margin: 12px 0; }
-.types span { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; background: var(--type-bg); text-transform: uppercase; }
-
-.description { font-size: 0.85rem; color: #abb2bf; margin: 12px 0; line-height: 1.4; font-style: italic; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; }
-
-.section-title { font-size: 0.7rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin: 15px 0 8px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 4px; }
-
-.evolution-box { background: #0d1117; padding: 10px; border-radius: 8px; font-size: 0.85rem; border: 1px dashed #444; color: #fff; }
-
-.stat-row { margin-bottom: 8px; text-align: left; }
-.stat-info { display: flex; justify-content: space-between; font-size: 0.65rem; margin-bottom: 3px; }
-.bar { height: 5px; background: #333; border-radius: 3px; overflow: hidden; }
+/* Stats */
+.stat-row { margin-bottom: 10px; text-align: left; }
+.stat-info { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 4px; }
+.bar { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
 .fill { height: 100%; background: #4caf50; transition: width 0.8s ease; }
 
-.nav-btns { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
-.nav-btns button { padding: 8px 18px; border: none; background: #30363d; color: white; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
+.nav-btns { margin-top: 25px; display: flex; gap: 15px; justify-content: center; }
+.nav-btns button { padding: 12px 20px; border: none; background: #30363d; color: white; border-radius: 8px; cursor: pointer; flex: 1; }
 </style>
 </head>
 <body>
 
-<div class="header-logo">
+<header>
     <img src="https://archives.bulbagarden.net/media/upload/4/4b/Pok%C3%A9dex_logo.png" alt="Pokedex" onclick="goHome()">
-</div>
+</header>
 
 <div id="home" class="home">
-    <h2 style="margin-bottom:20px">Selecciona una Región</h2>
+    <h2 style="margin-bottom:20px">Elige una Región</h2>
     <div class="region-grid" id="regions"></div>
 </div>
 
 <div id="app" class="layout hidden">
     <div class="sidebar">
         <div class="sidebar-tools">
-            <button class="btn-back" onclick="goHome()">← Regiones</button>
-            <input type="text" id="search" placeholder="Buscar..." oninput="filterList(this.value)">
+            <button class="btn-back" onclick="goHome()">← Cambiar Región</button>
+            <input type="text" id="search" placeholder="Escribe un nombre..." oninput="filterList(this.value)">
         </div>
         <div id="list"></div>
     </div>
     <div class="main">
-        <div id="card" class="card">Selecciona un Pokémon</div>
+        <div id="card" class="card">Selecciona un Pokémon para ver sus detalles</div>
     </div>
 </div>
 
 <script>
 const config = {
-    Kanto: [1, 151], Johto: [152, 251], Hoenn: [252, 386],
-    Sinnoh: [387, 493], Teselia: [494, 649], Kalos: [650, 721],
-    Alola: [722, 809], Galar: [810, 905], Paldea: [906, 1025]
+    Kanto: [1, 151], Johto: [152, 251], Hoenn: [252, 386], Sinnoh: [387, 493], 
+    Teselia: [494, 649], Kalos: [650, 721], Alola: [722, 809], Galar: [810, 905], Paldea: [906, 1025]
 };
 
 const typeES = {fire:'fuego', water:'agua', grass:'planta', electric:'eléctrico', psychic:'psíquico', dragon:'dragón', ghost:'fantasma', dark:'siniestro', fairy:'hada', normal:'normal', fighting:'lucha', flying:'volador', poison:'veneno', ground:'tierra', rock:'roca', bug:'bicho', steel:'acero', ice:'hielo'};
-const statES = {hp:'PS', attack:'At.', defense:'Def.', 'special-attack':'At. Esp.', 'special-defense':'Def. Esp.', speed:'Vel.'};
+const statES = {hp:'PS', attack:'Ataque', defense:'Defensa', 'special-attack':'At. Esp', 'special-defense':'Def. Esp', speed:'Velocidad'};
 
 let state = { fullList: [], filtered: [], currentIndex: 0 };
 
-// Cargar Regiones
+// Iniciar Regiones
 Object.keys(config).forEach(name => {
     const div = document.createElement('div');
     div.className = 'region-card';
-    div.innerHTML = `<h3>${name}</h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${config[name][0]}.png" style="width:50px">`;
+    div.innerHTML = `<h3>${name}</h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${config[name][0]}.png" style="width:60px">`;
     div.onclick = () => loadRegion(name);
     document.getElementById('regions').appendChild(div);
 });
 
-// Limpieza avanzada de nombres
+// Función de nombre ultra-limpia
 function formatName(name) {
-    const paradox = ['iron', 'scream', 'great', 'brute', 'flutter', 'slither', 'sandy', 'roaring', 'walking', 'gouging', 'raging'];
+    const paradoxPrefixes = ['iron', 'scream', 'great', 'brute', 'flutter', 'slither', 'sandy', 'roaring', 'walking', 'gouging', 'raging'];
     let parts = name.split('-');
-    if (paradox.includes(parts[0]) && parts.length > 1) {
+    
+    if (paradoxPrefixes.includes(parts[0]) && parts.length > 1) {
         return (parts[0] + ' ' + parts[1]).replace(/\b\w/g, l => l.toUpperCase());
     }
-    const tech = ['species', 'normal', 'f', 'm', 'standard', 'aria', 'incarnate'];
-    if (parts.length > 1 && tech.includes(parts[1])) return parts[0].replace(/\b\w/g, l => l.toUpperCase());
+    
+    // Si tiene guion pero la segunda parte es técnica, la quitamos
+    const technical = ['species', 'normal', 'f', 'm', 'standard', 'aria', 'incarnate'];
+    if (parts.length > 1 && technical.includes(parts[1])) {
+        return parts[0].replace(/\b\w/g, l => l.toUpperCase());
+    }
+    
     return name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
@@ -197,15 +202,14 @@ async function loadRegion(name) {
     const [start, end] = config[name];
     document.getElementById('home').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
-    document.getElementById('list').innerHTML = '<p style="padding:10px; font-size:12px">Cargando...</p>';
+    document.getElementById('list').innerHTML = '<p style="padding:15px">Cargando...</p>';
 
-    try {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${end - start + 1}&offset=${start - 1}`);
-        const data = await res.json();
-        state.fullList = data.results.map((p, i) => ({ id: start + i, name: formatName(p.name) }));
-        state.filtered = [...state.fullList];
-        renderSidebar();
-    } catch(e) { document.getElementById('list').innerHTML = 'Error'; }
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${end - start + 1}&offset=${start - 1}`);
+    const data = await res.json();
+    
+    state.fullList = data.results.map((p, i) => ({ id: start + i, name: formatName(p.name) }));
+    state.filtered = [...state.fullList];
+    renderSidebar();
 }
 
 function renderSidebar() {
@@ -213,48 +217,39 @@ function renderSidebar() {
     listEl.innerHTML = '';
     state.filtered.forEach((p, index) => {
         const d = document.createElement('div');
-        d.className = 'poke-item';
-        d.innerHTML = `<small>#${p.id}</small> <strong>${p.name}</strong>`;
+        d.className = 'poke-item' + (state.currentIndex === index ? ' active' : '');
+        d.innerHTML = `${p.name}`; // ELIMINADO EL NÚMERO AQUÍ
         d.onclick = () => {
             state.currentIndex = index;
             showPokemon(p.id);
-            document.querySelectorAll('.poke-item').forEach(i => i.classList.remove('active'));
-            d.classList.add('active');
+            renderSidebar(); // Actualizar clase active
         };
         listEl.appendChild(d);
     });
 }
 
 function filterList(val) {
-    const q = val.toLowerCase();
-    state.filtered = state.fullList.filter(p => p.name.toLowerCase().includes(q) || p.id.toString().includes(q));
+    state.filtered = state.fullList.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
+    state.currentIndex = 0;
     renderSidebar();
-}
-
-function parseEvo(chain, res = []) {
-    res.push(formatName(chain.species.name));
-    if (chain.evolves_to.length > 0) parseEvo(chain.evolves_to[0], res);
-    return res;
 }
 
 async function showPokemon(id) {
     const cardEl = document.getElementById('card');
-    cardEl.innerHTML = 'Cargando...';
+    cardEl.innerHTML = 'Buscando datos...';
     try {
         const p = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(r => r.json());
         const s = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then(r => r.json());
         const e = await fetch(s.evolution_chain.url).then(r => r.json());
-        const evo = parseEvo(e.chain);
+        
         const desc = s.flavor_text_entries.find(en => en.language.name === 'es')?.flavor_text.replace(/\f/g, ' ') || "Sin descripción.";
 
         cardEl.innerHTML = `
-            <small>Nº ${p.id}</small>
-            <h2 style="margin:5px 0; font-size: 1.3rem;">${formatName(p.name)}</h2>
+            <small style="opacity:0.5">Nacional Nº ${p.id}</small>
+            <h2 style="margin:5px 0">${formatName(p.name)}</h2>
             <img src="${p.sprites.other['official-artwork'].front_default}" alt="${p.name}">
             <div class="types">${p.types.map(t => `<span>${typeES[t.type.name] || t.type.name}</span>`).join('')}</div>
             <div class="description">"${desc}"</div>
-            <div class="section-title">Evolución</div>
-            <div class="evolution-box">${evo.join(' → ')}</div>
             <div class="section-title">Estadísticas</div>
             ${p.stats.map(st => `
                 <div class="stat-row">
@@ -267,7 +262,7 @@ async function showPokemon(id) {
                 <button onclick="changePoke(1)">Siguiente</button>
             </div>
         `;
-    } catch(e) { cardEl.innerHTML = "Error"; }
+    } catch(e) { cardEl.innerHTML = "Error de conexión"; }
 }
 
 function changePoke(dir) {
@@ -275,6 +270,10 @@ function changePoke(dir) {
     if (n >= 0 && n < state.filtered.length) {
         state.currentIndex = n;
         showPokemon(state.filtered[n].id);
+        renderSidebar();
+        // Auto-scroll en móvil para que el seleccionado se vea
+        const activeItem = document.querySelector('.poke-item.active');
+        if(activeItem) activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     }
 }
 
