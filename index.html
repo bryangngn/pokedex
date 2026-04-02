@@ -18,7 +18,6 @@ body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
-    /* Usamos dvh para que se ajuste perfectamente al navegador móvil */
     height: 100dvh;
     display: flex;
     flex-direction: column;
@@ -44,8 +43,7 @@ header img { height: 30px; cursor: pointer; }
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    /* Margen inferior extra para que Paldea no se tape */
-    padding-bottom: 80px; 
+    padding-bottom: 100px; 
 }
 .region-grid {
     display: grid;
@@ -64,11 +62,7 @@ header img { height: 30px; cursor: pointer; }
 }
 
 /* --- LAYOUT APP --- */
-.layout { 
-    display: flex; 
-    flex: 1;
-    overflow: hidden;
-}
+.layout { display: flex; flex: 1; overflow: hidden; }
 
 .sidebar {
     width: 250px;
@@ -90,29 +84,14 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
 @media (max-width: 768px) {
     .layout { flex-direction: column; }
     .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #30363d; }
-    #list { 
-        display: flex; 
-        overflow-x: auto; 
-        white-space: nowrap; 
-        padding: 5px 0;
-    }
+    #list { display: flex; overflow-x: auto; white-space: nowrap; padding: 5px 0; }
     .poke-item { display: inline-block; padding: 10px 20px; border-bottom: none; border-right: 1px solid #21262d; }
     .poke-item.active { border-left: none; border-bottom: 3px solid var(--accent); }
-    
-    /* Eliminar palabra "Nacional" en móvil */
     .label-nacional { display: none; }
 }
 
 /* --- FICHA POKEMON --- */
-.main { 
-    flex: 1; 
-    display: flex; 
-    justify-content: center; 
-    padding: 15px; 
-    overflow-y: auto;
-    /* Evita que los botones se peguen al menú del móvil */
-    padding-bottom: 60px; 
-}
+.main { flex: 1; display: flex; justify-content: center; padding: 15px; overflow-y: auto; padding-bottom: 80px; }
 .card {
     background: var(--card);
     padding: 20px;
@@ -123,14 +102,29 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
     border: 1px solid #30363d;
     height: fit-content;
 }
-.card img { width: 160px; height: 160px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
+.card img.main-img { width: 160px; height: 160px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
 
-.types { display: flex; justify-content: center; gap: 8px; margin: 15px 0; }
+.types { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
 .types span { padding: 5px 15px; border-radius: 30px; font-size: 0.75rem; font-weight: bold; background: #2b6cb0; text-transform: uppercase; }
 
 .description { font-size: 0.85rem; color: #abb2bf; margin: 15px 0; line-height: 1.5; font-style: italic; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; }
 
 .section-title { font-size: 0.7rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin: 15px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 4px; }
+
+/* NUEVO ESTILO EVOLUCIÓN */
+.evo-chain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: #0d1117;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px dashed #30363d;
+}
+.evo-step { font-size: 0.85rem; font-weight: bold; color: #fff; text-transform: capitalize; }
+.evo-arrow { color: var(--accent); font-weight: bold; }
 
 /* Stats */
 .stat-row { margin-bottom: 8px; text-align: left; }
@@ -138,23 +132,8 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
 .bar { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
 .fill { height: 100%; background: #4caf50; transition: width 0.8s ease; }
 
-.nav-btns { 
-    margin-top: 25px; 
-    display: flex; 
-    gap: 15px; 
-    justify-content: center;
-    padding-bottom: 10px; /* Espacio extra interno */
-}
-.nav-btns button { 
-    padding: 12px; 
-    border: none; 
-    background: #30363d; 
-    color: white; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    flex: 1; 
-    font-weight: bold;
-}
+.nav-btns { margin-top: 25px; display: flex; gap: 10px; justify-content: center; }
+.nav-btns button { padding: 12px; border: none; background: #30363d; color: white; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -183,8 +162,8 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
 
 <script>
 const config = {
-    Kanto: [1, 151], Johto: [152, 251], Hoenn: [252, 386], Sinnoh: [387, 493], 
-    Teselia: [494, 649], Kalos: [650, 721], Alola: [722, 809], Galar: [810, 905], Paldea: [906, 1025]
+    Kanto:[1,151], Johto:[152,251], Hoenn:[252,386], Sinnoh:[387,493], 
+    Teselia:[494,649], Kalos:[650,721], Alola:[722,809], Galar:[810,905], Paldea:[906,1025]
 };
 
 const typeES = {fire:'fuego', water:'agua', grass:'planta', electric:'eléctrico', psychic:'psíquico', dragon:'dragón', ghost:'fantasma', dark:'siniestro', fairy:'hada', normal:'normal', fighting:'lucha', flying:'volador', poison:'veneno', ground:'tierra', rock:'roca', bug:'bicho', steel:'acero', ice:'hielo'};
@@ -192,7 +171,6 @@ const statES = {hp:'PS', attack:'Ataque', defense:'Defensa', 'special-attack':'A
 
 let state = { fullList: [], filtered: [], currentIndex: 0 };
 
-// Crear regiones
 Object.keys(config).forEach(name => {
     const div = document.createElement('div');
     div.className = 'region-card';
@@ -215,7 +193,6 @@ async function loadRegion(name) {
     document.getElementById('home').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     document.getElementById('list').innerHTML = '<p style="padding:15px">Cargando...</p>';
-
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${end - start + 1}&offset=${start - 1}`);
     const data = await res.json();
     state.fullList = data.results.map((p, i) => ({ id: start + i, name: formatName(p.name) }));
@@ -230,11 +207,7 @@ function renderSidebar() {
         const d = document.createElement('div');
         d.className = 'poke-item' + (state.currentIndex === index ? ' active' : '');
         d.innerHTML = p.name;
-        d.onclick = () => {
-            state.currentIndex = index;
-            showPokemon(p.id);
-            renderSidebar();
-        };
+        d.onclick = () => { state.currentIndex = index; showPokemon(p.id); renderSidebar(); };
         listEl.appendChild(d);
     });
 }
@@ -245,20 +218,43 @@ function filterList(val) {
     renderSidebar();
 }
 
+// Función para procesar la cadena evolutiva
+function getEvoChain(chain, result = []) {
+    result.push(formatName(chain.species.name));
+    if (chain.evolves_to.length > 0) {
+        // Tomamos la primera evolución posible para mantener la simplicidad visual
+        getEvoChain(chain.evolves_to[0], result);
+    }
+    return result;
+}
+
 async function showPokemon(id) {
     const cardEl = document.getElementById('card');
     cardEl.innerHTML = 'Cargando...';
     try {
         const p = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(r => r.json());
         const s = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then(r => r.json());
+        const e = await fetch(s.evolution_chain.url).then(r => r.json());
+        
+        const evoArray = getEvoChain(e.chain);
         const desc = s.flavor_text_entries.find(en => en.language.name === 'es')?.flavor_text.replace(/\f/g, ' ') || "Sin descripción.";
 
         cardEl.innerHTML = `
             <small style="opacity:0.6"><span class="label-nacional">Nacional </span>ID: ${p.id}</small>
             <h2 style="margin:5px 0">${formatName(p.name)}</h2>
-            <img src="${p.sprites.other['official-artwork'].front_default}" alt="${p.name}">
+            <img src="${p.sprites.other['official-artwork'].front_default}" class="main-img" alt="${p.name}">
             <div class="types">${p.types.map(t => `<span>${typeES[t.type.name] || t.type.name}</span>`).join('')}</div>
+            
             <div class="description">"${desc}"</div>
+
+            <div class="section-title">Línea Evolutiva</div>
+            <div class="evo-chain">
+                ${evoArray.map((name, i) => `
+                    <span class="evo-step">${name}</span>
+                    ${i < evoArray.length - 1 ? '<span class="evo-arrow">→</span>' : ''}
+                `).join('')}
+            </div>
+
             <div class="section-title">Estadísticas</div>
             ${p.stats.map(st => `
                 <div class="stat-row">
@@ -266,12 +262,13 @@ async function showPokemon(id) {
                     <div class="bar"><div class="fill" style="width:${Math.min(st.base_stat, 100)}%"></div></div>
                 </div>
             `).join('')}
+
             <div class="nav-btns">
                 <button onclick="changePoke(-1)">Anterior</button>
                 <button onclick="changePoke(1)">Siguiente</button>
             </div>
         `;
-    } catch(e) { cardEl.innerHTML = "Error"; }
+    } catch(e) { cardEl.innerHTML = "Error al cargar datos."; }
 }
 
 function changePoke(dir) {
@@ -281,7 +278,7 @@ function changePoke(dir) {
         showPokemon(state.filtered[n].id);
         renderSidebar();
         const activeItem = document.querySelector('.poke-item.active');
-        if(activeItem) activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        if(activeItem) activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center' });
     }
 }
 
