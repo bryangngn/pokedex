@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Pokédex Pro - Eevee Fix</title>
+<title>Pokédex Pro - Global Search</title>
 <style>
 :root {
     --bg: #0b0f14;
@@ -35,7 +35,7 @@ header img { height: 30px; cursor: pointer; }
 
 .hidden { display: none !important; }
 
-/* --- HOME REGIONES --- */
+/* --- HOME & GLOBAL SEARCH --- */
 .home {
     flex: 1;
     overflow-y: auto;
@@ -45,6 +45,31 @@ header img { height: 30px; cursor: pointer; }
     padding: 20px;
     padding-bottom: 100px; 
 }
+
+.search-container-global {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.search-container-global input {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 30px;
+    border: 1px solid #30363d;
+    background: var(--card);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-container-global input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(255, 59, 59, 0.2);
+}
+
 .region-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -52,6 +77,29 @@ header img { height: 30px; cursor: pointer; }
     width: 100%;
     max-width: 900px;
 }
+
+/* Resultados de búsqueda rápida */
+.global-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.result-card {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #30363d;
+    transition: 0.2s;
+}
+.result-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.result-card img { width: 80px; height: 80px; }
+.result-card p { margin: 5px 0 0; font-weight: bold; font-size: 0.8rem; text-transform: capitalize; }
+
 .region-card {
     background: var(--card);
     border-radius: 12px;
@@ -74,20 +122,17 @@ header img { height: 30px; cursor: pointer; }
 
 .sidebar-tools { padding: 10px; border-bottom: 1px solid #30363d; }
 .btn-back { width: 100%; padding: 8px; margin-bottom: 8px; background: #30363d; color: white; border: none; border-radius: 4px; cursor: pointer; }
-input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0b0f14; color: white; box-sizing: border-box; }
+#sidebar-search { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0b0f14; color: white; box-sizing: border-box; }
 
 #list { flex: 1; overflow-y: auto; }
 .poke-item { padding: 12px 15px; border-bottom: 1px solid #21262d; cursor: pointer; font-size: 0.95rem; }
 .poke-item.active { background: #1c2128; border-left: 4px solid var(--accent); color: var(--accent); }
 
-/* --- AJUSTES MÓVIL --- */
 @media (max-width: 768px) {
     .layout { flex-direction: column; }
     .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #30363d; }
     #list { display: flex; overflow-x: auto; white-space: nowrap; padding: 5px 0; }
     .poke-item { display: inline-block; padding: 10px 20px; border-bottom: none; border-right: 1px solid #21262d; }
-    .poke-item.active { border-left: none; border-bottom: 3px solid var(--accent); }
-    .label-nacional { display: none; }
 }
 
 /* --- FICHA POKEMON --- */
@@ -102,36 +147,18 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
     border: 1px solid #30363d;
     height: fit-content;
 }
-.card img.main-img { width: 160px; height: 160px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
-
-.types { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
-.types span { padding: 5px 15px; border-radius: 30px; font-size: 0.75rem; font-weight: bold; background: #2b6cb0; text-transform: uppercase; }
-
-.description { font-size: 0.85rem; color: #abb2bf; margin: 15px 0; line-height: 1.5; font-style: italic; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; }
-
+.card img.main-img { width: 160px; height: 160px; }
+.description { font-size: 0.85rem; color: #abb2bf; margin: 15px 0; font-style: italic; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; }
 .section-title { font-size: 0.7rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin: 15px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 4px; }
+.evo-container { background: #0d1117; padding: 12px; border-radius: 12px; border: 1px dashed #30363d; font-size: 0.85rem; }
+.current-evo { color: var(--accent); font-weight: bold; text-decoration: underline; }
+.nav-btns { margin-top: 25px; display: flex; gap: 10px; }
+.nav-btns button { padding: 12px; border: none; background: #30363d; color: white; border-radius: 8px; flex: 1; font-weight: bold; cursor: pointer; }
 
-/* EVOLUCIÓN MEJORADA */
-.evo-container {
-    background: #0d1117;
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px dashed #30363d;
-    font-size: 0.85rem;
-    line-height: 1.6;
-}
-.evo-group { display: block; margin-bottom: 5px; }
-.current-evo { color: var(--accent); font-weight: bold; border-bottom: 1px solid var(--accent); }
-.evo-name { text-transform: capitalize; font-weight: 500; }
-
-/* Stats */
+/* Stats bars */
 .stat-row { margin-bottom: 8px; text-align: left; }
-.stat-info { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 3px; }
-.bar { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+.bar { height: 6px; background: #333; border-radius: 3px; overflow: hidden; margin-top:3px; }
 .fill { height: 100%; background: #4caf50; transition: width 0.8s ease; }
-
-.nav-btns { margin-top: 25px; display: flex; gap: 10px; justify-content: center; }
-.nav-btns button { padding: 12px; border: none; background: #30363d; color: white; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -141,15 +168,24 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
 </header>
 
 <div id="home" class="home">
-    <h2 style="margin-bottom:20px">Elige una Región</h2>
-    <div class="region-grid" id="regions"></div>
+    <h2 id="home-title" style="margin-bottom:15px">Pokédex Global</h2>
+    
+    <div class="search-container-global">
+        <input type="text" id="global-search" placeholder="Busca cualquier Pokémon (ej. Pikachu)..." oninput="handleGlobalSearch(this.value)">
+    </div>
+
+    <div id="region-grid" class="region-grid">
+        </div>
+
+    <div id="global-results" class="global-results hidden">
+        </div>
 </div>
 
 <div id="app" class="layout hidden">
     <div class="sidebar">
         <div class="sidebar-tools">
-            <button class="btn-back" onclick="goHome()">← Regiones</button>
-            <input type="text" id="search" placeholder="Buscar..." oninput="filterList(this.value)">
+            <button class="btn-back" onclick="goHome()">← Volver al Inicio</button>
+            <input type="text" id="sidebar-search" placeholder="Filtrar en esta región..." oninput="filterList(this.value)">
         </div>
         <div id="list"></div>
     </div>
@@ -165,17 +201,26 @@ const config = {
 };
 
 const typeES = {fire:'fuego', water:'agua', grass:'planta', electric:'eléctrico', psychic:'psíquico', dragon:'dragón', ghost:'fantasma', dark:'siniestro', fairy:'hada', normal:'normal', fighting:'lucha', flying:'volador', poison:'veneno', ground:'tierra', rock:'roca', bug:'bicho', steel:'acero', ice:'hielo'};
-const statES = {hp:'PS', attack:'Ataque', defense:'Defensa', 'special-attack':'At. Esp', 'special-defense':'Def. Esp', speed:'Velocidad'};
+const statES = {hp:'PS', attack:'At.', defense:'Def.', 'special-attack':'At. Esp', 'special-defense':'Def. Esp', speed:'Vel.'};
 
-let state = { fullList: [], filtered: [], currentIndex: 0 };
+let state = { fullList: [], filtered: [], currentIndex: 0, globalData: [] };
 
-Object.keys(config).forEach(name => {
-    const div = document.createElement('div');
-    div.className = 'region-card';
-    div.innerHTML = `<h3>${name}</h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${config[name][0]}.png" style="width:50px">`;
-    div.onclick = () => loadRegion(name);
-    document.getElementById('regions').appendChild(div);
-});
+// Inicializar Home
+async function init() {
+    const grid = document.getElementById('region-grid');
+    Object.keys(config).forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'region-card';
+        div.innerHTML = `<h3>${name}</h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${config[name][0]}.png" style="width:50px">`;
+        div.onclick = () => loadRegion(name);
+        grid.appendChild(div);
+    });
+
+    // Cargar nombres para búsqueda global en segundo plano
+    const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
+    const data = await res.json();
+    state.globalData = data.results.map((p, i) => ({ id: i + 1, name: p.name }));
+}
 
 function formatName(name) {
     const paradox = ['iron', 'scream', 'great', 'brute', 'flutter', 'slither', 'sandy', 'roaring', 'walking', 'gouging', 'raging'];
@@ -186,11 +231,54 @@ function formatName(name) {
     return name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
+// BUSQUEDA GLOBAL
+function handleGlobalSearch(val) {
+    const grid = document.getElementById('region-grid');
+    const resultsArea = document.getElementById('global-results');
+    const title = document.getElementById('home-title');
+
+    if (val.length < 2) {
+        grid.classList.remove('hidden');
+        resultsArea.classList.add('hidden');
+        title.innerText = "Elige una Región";
+        return;
+    }
+
+    title.innerText = "Resultados encontrados";
+    grid.classList.add('hidden');
+    resultsArea.classList.remove('hidden');
+
+    const matches = state.globalData.filter(p => p.name.includes(val.toLowerCase())).slice(0, 20);
+    resultsArea.innerHTML = matches.map(p => `
+        <div class="result-card" onclick="quickView(${p.id})">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png">
+            <p>${formatName(p.name)}</p>
+            <small style="opacity:0.5">ID: ${p.id}</small>
+        </div>
+    `).join('');
+}
+
+async function quickView(id) {
+    // Determinar a qué región pertenece para cargar la lista lateral
+    let regionName = "Paldea";
+    for (const [name, range] of Object.entries(config)) {
+        if (id >= range[0] && id <= range[1]) {
+            regionName = name;
+            break;
+        }
+    }
+    await loadRegion(regionName);
+    const index = state.fullList.findIndex(p => p.id === id);
+    state.currentIndex = index;
+    showPokemon(id);
+}
+
 async function loadRegion(name) {
     const [start, end] = config[name];
     document.getElementById('home').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
-    document.getElementById('list').innerHTML = '<p style="padding:15px">Cargando...</p>';
+    document.getElementById('list').innerHTML = '<p style="padding:15px">Cargando región...</p>';
+    
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${end - start + 1}&offset=${start - 1}`);
     const data = await res.json();
     state.fullList = data.results.map((p, i) => ({ id: start + i, name: formatName(p.name) }));
@@ -212,63 +300,51 @@ function renderSidebar() {
 
 function filterList(val) {
     state.filtered = state.fullList.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
-    state.currentIndex = 0;
     renderSidebar();
 }
 
-// NUEVA FUNCIÓN PARA PROCESAR TODA LA CADENA (Especial para Eevee)
 function buildEvoUI(chain, currentName) {
     let base = formatName(chain.species.name);
     let isCurrent = (base.toLowerCase() === currentName.toLowerCase());
-    let html = `<span class="${isCurrent ? 'current-evo' : 'evo-name'}">${base}</span>`;
-
+    let html = `<span class="${isCurrent ? 'current-evo' : ''}">${base}</span>`;
     if (chain.evolves_to.length > 0) {
-        html += ` → <div class="evo-group">`;
-        let evos = chain.evolves_to.map(e => buildEvoUI(e, currentName));
-        html += evos.join(', ');
-        html += `</div>`;
+        html += ` → <div style="display:inline-block">${chain.evolves_to.map(e => buildEvoUI(e, currentName)).join(', ')}</div>`;
     }
     return html;
 }
 
 async function showPokemon(id) {
     const cardEl = document.getElementById('card');
-    cardEl.innerHTML = 'Cargando...';
+    cardEl.innerHTML = 'Consultando datos...';
     try {
         const p = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(r => r.json());
         const s = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then(r => r.json());
         const e = await fetch(s.evolution_chain.url).then(r => r.json());
-        
-        const evoHTML = buildEvoUI(e.chain, p.name);
         const desc = s.flavor_text_entries.find(en => en.language.name === 'es')?.flavor_text.replace(/\f/g, ' ') || "Sin descripción.";
 
         cardEl.innerHTML = `
-            <small style="opacity:0.6"><span class="label-nacional">Nacional </span>ID: ${p.id}</small>
+            <small style="opacity:0.6">ID: ${p.id}</small>
             <h2 style="margin:5px 0">${formatName(p.name)}</h2>
             <img src="${p.sprites.other['official-artwork'].front_default}" class="main-img" alt="${p.name}">
             <div class="types">${p.types.map(t => `<span>${typeES[t.type.name] || t.type.name}</span>`).join('')}</div>
-            
             <div class="description">"${desc}"</div>
-
-            <div class="section-title">Cadena Evolutiva</div>
-            <div class="evo-container">
-                ${evoHTML}
-            </div>
-
+            <div class="section-title">Evolución</div>
+            <div class="evo-container">${buildEvoUI(e.chain, p.name)}</div>
             <div class="section-title">Estadísticas</div>
             ${p.stats.map(st => `
                 <div class="stat-row">
-                    <div class="stat-info"><span>${statES[st.stat.name] || st.stat.name}</span><span>${st.base_stat}</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem">
+                        <span>${statES[st.stat.name] || st.stat.name}</span><span>${st.base_stat}</span>
+                    </div>
                     <div class="bar"><div class="fill" style="width:${Math.min(st.base_stat, 100)}%"></div></div>
                 </div>
             `).join('')}
-
             <div class="nav-btns">
                 <button onclick="changePoke(-1)">Anterior</button>
                 <button onclick="changePoke(1)">Siguiente</button>
             </div>
         `;
-    } catch(e) { cardEl.innerHTML = "Error al cargar datos."; }
+    } catch(e) { cardEl.innerHTML = "Error de carga."; }
 }
 
 function changePoke(dir) {
@@ -277,15 +353,17 @@ function changePoke(dir) {
         state.currentIndex = n;
         showPokemon(state.filtered[n].id);
         renderSidebar();
-        const activeItem = document.querySelector('.poke-item.active');
-        if(activeItem) activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center' });
     }
 }
 
 function goHome() {
     document.getElementById('home').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
+    document.getElementById('global-search').value = "";
+    handleGlobalSearch("");
 }
+
+init();
 </script>
 </body>
 </html>
