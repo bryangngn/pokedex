@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Pokédex Pro</title>
 <style>
 :root {
@@ -18,29 +18,34 @@ body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
+    /* Usamos dvh para que se ajuste perfectamente al navegador móvil */
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 }
 
-/* --- CABECERA --- */
 header {
     background: var(--bg);
     border-bottom: 1px solid #30363d;
     padding: 10px;
     text-align: center;
-    z-index: 100;
+    flex-shrink: 0;
 }
-header img { height: 35px; cursor: pointer; }
+header img { height: 30px; cursor: pointer; }
 
 .hidden { display: none !important; }
 
 /* --- HOME REGIONES --- */
 .home {
-    height: calc(100vh - 60px);
+    flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    /* Margen inferior extra para que Paldea no se tape */
+    padding-bottom: 80px; 
 }
 .region-grid {
     display: grid;
@@ -58,10 +63,13 @@ header img { height: 35px; cursor: pointer; }
     border: 1px solid #30363d;
 }
 
-/* --- LAYOUT DINÁMICO --- */
-.layout { display: flex; height: calc(100vh - 56px); flex-direction: row; }
+/* --- LAYOUT APP --- */
+.layout { 
+    display: flex; 
+    flex: 1;
+    overflow: hidden;
+}
 
-/* Sidebar (PC) / Topbar (Móvil) */
 .sidebar {
     width: 250px;
     background: var(--sidebar);
@@ -71,43 +79,40 @@ header img { height: 35px; cursor: pointer; }
 }
 
 .sidebar-tools { padding: 10px; border-bottom: 1px solid #30363d; }
-.btn-back { width: 100%; padding: 8px; margin-bottom: 8px; background: #30363d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.btn-back { width: 100%; padding: 8px; margin-bottom: 8px; background: #30363d; color: white; border: none; border-radius: 4px; cursor: pointer; }
 input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0b0f14; color: white; box-sizing: border-box; }
 
 #list { flex: 1; overflow-y: auto; }
-.poke-item { padding: 12px 15px; border-bottom: 1px solid #21262d; cursor: pointer; font-size: 0.95rem; font-weight: 500; }
+.poke-item { padding: 12px 15px; border-bottom: 1px solid #21262d; cursor: pointer; font-size: 0.95rem; }
 .poke-item.active { background: #1c2128; border-left: 4px solid var(--accent); color: var(--accent); }
 
-/* --- RESPONSIVE MÓVIL --- */
+/* --- AJUSTES MÓVIL --- */
 @media (max-width: 768px) {
     .layout { flex-direction: column; }
-    .sidebar { 
-        width: 100%; 
-        height: auto; 
-        border-right: none; 
-        border-bottom: 1px solid #30363d; 
-    }
+    .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #30363d; }
     #list { 
         display: flex; 
         overflow-x: auto; 
-        overflow-y: hidden; 
         white-space: nowrap; 
         padding: 5px 0;
-        -webkit-overflow-scrolling: touch;
     }
-    .poke-item { 
-        display: inline-block; 
-        padding: 8px 20px; 
-        border-bottom: none; 
-        border-right: 1px solid #21262d;
-        font-size: 0.85rem;
-    }
+    .poke-item { display: inline-block; padding: 10px 20px; border-bottom: none; border-right: 1px solid #21262d; }
     .poke-item.active { border-left: none; border-bottom: 3px solid var(--accent); }
-    .main { padding: 10px !important; }
+    
+    /* Eliminar palabra "Nacional" en móvil */
+    .label-nacional { display: none; }
 }
 
 /* --- FICHA POKEMON --- */
-.main { flex: 1; display: flex; justify-content: center; padding: 25px; overflow-y: auto; }
+.main { 
+    flex: 1; 
+    display: flex; 
+    justify-content: center; 
+    padding: 15px; 
+    overflow-y: auto;
+    /* Evita que los botones se peguen al menú del móvil */
+    padding-bottom: 60px; 
+}
 .card {
     background: var(--card);
     padding: 20px;
@@ -116,24 +121,40 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
     max-width: 450px;
     text-align: center;
     border: 1px solid #30363d;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     height: fit-content;
 }
-.card img { width: 180px; height: 180px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); }
+.card img { width: 160px; height: 160px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
+
 .types { display: flex; justify-content: center; gap: 8px; margin: 15px 0; }
 .types span { padding: 5px 15px; border-radius: 30px; font-size: 0.75rem; font-weight: bold; background: #2b6cb0; text-transform: uppercase; }
-.description { font-size: 0.9rem; color: #abb2bf; margin: 15px 0; line-height: 1.5; font-style: italic; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
-.section-title { font-size: 0.7rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin: 20px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 5px; }
-.evolution-box { background: #0d1117; padding: 12px; border-radius: 8px; font-size: 0.9rem; border: 1px dashed #444; }
+
+.description { font-size: 0.85rem; color: #abb2bf; margin: 15px 0; line-height: 1.5; font-style: italic; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; }
+
+.section-title { font-size: 0.7rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin: 15px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 4px; }
 
 /* Stats */
-.stat-row { margin-bottom: 10px; text-align: left; }
-.stat-info { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 4px; }
+.stat-row { margin-bottom: 8px; text-align: left; }
+.stat-info { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 3px; }
 .bar { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
 .fill { height: 100%; background: #4caf50; transition: width 0.8s ease; }
 
-.nav-btns { margin-top: 25px; display: flex; gap: 15px; justify-content: center; }
-.nav-btns button { padding: 12px 20px; border: none; background: #30363d; color: white; border-radius: 8px; cursor: pointer; flex: 1; }
+.nav-btns { 
+    margin-top: 25px; 
+    display: flex; 
+    gap: 15px; 
+    justify-content: center;
+    padding-bottom: 10px; /* Espacio extra interno */
+}
+.nav-btns button { 
+    padding: 12px; 
+    border: none; 
+    background: #30363d; 
+    color: white; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    flex: 1; 
+    font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -150,13 +171,13 @@ input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363
 <div id="app" class="layout hidden">
     <div class="sidebar">
         <div class="sidebar-tools">
-            <button class="btn-back" onclick="goHome()">← Cambiar Región</button>
-            <input type="text" id="search" placeholder="Escribe un nombre..." oninput="filterList(this.value)">
+            <button class="btn-back" onclick="goHome()">← Regiones</button>
+            <input type="text" id="search" placeholder="Buscar..." oninput="filterList(this.value)">
         </div>
         <div id="list"></div>
     </div>
     <div class="main">
-        <div id="card" class="card">Selecciona un Pokémon para ver sus detalles</div>
+        <div id="card" class="card">Selecciona un Pokémon</div>
     </div>
 </div>
 
@@ -171,30 +192,21 @@ const statES = {hp:'PS', attack:'Ataque', defense:'Defensa', 'special-attack':'A
 
 let state = { fullList: [], filtered: [], currentIndex: 0 };
 
-// Iniciar Regiones
+// Crear regiones
 Object.keys(config).forEach(name => {
     const div = document.createElement('div');
     div.className = 'region-card';
-    div.innerHTML = `<h3>${name}</h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${config[name][0]}.png" style="width:60px">`;
+    div.innerHTML = `<h3>${name}</h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${config[name][0]}.png" style="width:50px">`;
     div.onclick = () => loadRegion(name);
     document.getElementById('regions').appendChild(div);
 });
 
-// Función de nombre ultra-limpia
 function formatName(name) {
-    const paradoxPrefixes = ['iron', 'scream', 'great', 'brute', 'flutter', 'slither', 'sandy', 'roaring', 'walking', 'gouging', 'raging'];
+    const paradox = ['iron', 'scream', 'great', 'brute', 'flutter', 'slither', 'sandy', 'roaring', 'walking', 'gouging', 'raging'];
     let parts = name.split('-');
-    
-    if (paradoxPrefixes.includes(parts[0]) && parts.length > 1) {
-        return (parts[0] + ' ' + parts[1]).replace(/\b\w/g, l => l.toUpperCase());
-    }
-    
-    // Si tiene guion pero la segunda parte es técnica, la quitamos
-    const technical = ['species', 'normal', 'f', 'm', 'standard', 'aria', 'incarnate'];
-    if (parts.length > 1 && technical.includes(parts[1])) {
-        return parts[0].replace(/\b\w/g, l => l.toUpperCase());
-    }
-    
+    if (paradox.includes(parts[0]) && parts.length > 1) return (parts[0] + ' ' + parts[1]).replace(/\b\w/g, l => l.toUpperCase());
+    const tech = ['species', 'normal', 'f', 'm', 'standard', 'aria', 'incarnate'];
+    if (parts.length > 1 && tech.includes(parts[1])) return parts[0].replace(/\b\w/g, l => l.toUpperCase());
     return name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
@@ -206,7 +218,6 @@ async function loadRegion(name) {
 
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${end - start + 1}&offset=${start - 1}`);
     const data = await res.json();
-    
     state.fullList = data.results.map((p, i) => ({ id: start + i, name: formatName(p.name) }));
     state.filtered = [...state.fullList];
     renderSidebar();
@@ -218,11 +229,11 @@ function renderSidebar() {
     state.filtered.forEach((p, index) => {
         const d = document.createElement('div');
         d.className = 'poke-item' + (state.currentIndex === index ? ' active' : '');
-        d.innerHTML = `${p.name}`; // ELIMINADO EL NÚMERO AQUÍ
+        d.innerHTML = p.name;
         d.onclick = () => {
             state.currentIndex = index;
             showPokemon(p.id);
-            renderSidebar(); // Actualizar clase active
+            renderSidebar();
         };
         listEl.appendChild(d);
     });
@@ -236,16 +247,14 @@ function filterList(val) {
 
 async function showPokemon(id) {
     const cardEl = document.getElementById('card');
-    cardEl.innerHTML = 'Buscando datos...';
+    cardEl.innerHTML = 'Cargando...';
     try {
         const p = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(r => r.json());
         const s = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then(r => r.json());
-        const e = await fetch(s.evolution_chain.url).then(r => r.json());
-        
         const desc = s.flavor_text_entries.find(en => en.language.name === 'es')?.flavor_text.replace(/\f/g, ' ') || "Sin descripción.";
 
         cardEl.innerHTML = `
-            <small style="opacity:0.5">Nacional Nº ${p.id}</small>
+            <small style="opacity:0.6"><span class="label-nacional">Nacional </span>ID: ${p.id}</small>
             <h2 style="margin:5px 0">${formatName(p.name)}</h2>
             <img src="${p.sprites.other['official-artwork'].front_default}" alt="${p.name}">
             <div class="types">${p.types.map(t => `<span>${typeES[t.type.name] || t.type.name}</span>`).join('')}</div>
@@ -262,7 +271,7 @@ async function showPokemon(id) {
                 <button onclick="changePoke(1)">Siguiente</button>
             </div>
         `;
-    } catch(e) { cardEl.innerHTML = "Error de conexión"; }
+    } catch(e) { cardEl.innerHTML = "Error"; }
 }
 
 function changePoke(dir) {
@@ -271,7 +280,6 @@ function changePoke(dir) {
         state.currentIndex = n;
         showPokemon(state.filtered[n].id);
         renderSidebar();
-        // Auto-scroll en móvil para que el seleccionado se vea
         const activeItem = document.querySelector('.poke-item.active');
         if(activeItem) activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     }
