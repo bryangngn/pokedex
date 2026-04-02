@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokédex Pro - Paldea Definitive Fix</title>
+<style>
+:root {
+    --bg: #0b0f14;
+    --card: #161b22;
+    --accent: #ff3b3b;
+    --text: #e6edf3;
+    --sidebar: #0d1117;
+    --type-bg: #2b6cb0;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+}
+
+/* --- CABECERA --- */
+.header-logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    background: var(--bg);
+    border-bottom: 1px solid #30363d;
+}
+.header-logo img { height: 50px; cursor: pointer; transition: 0.3s; }
+
+.hidden { display: none !important; }
+
+/* --- HOME --- */
+.home {
+    height: calc(100vh - 81px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+.region-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    width: 100%;
+    max-width: 1000px;
+}
+.region-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #30363d;
+    transition: 0.2s;
+}
+.region-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+
+/* --- LAYOUT --- */
+.layout { display: flex; height: calc(100vh - 81px); }
+
+.sidebar {
+    width: 300px;
+    background: var(--sidebar);
+    border-right: 1px solid #30363d;
+    display: flex;
+    flex-direction: column;
+}
+@media (max-width: 768px) {
+    .sidebar { width: 85px; }
+    .sidebar strong, .btn-back span { display: none; }
+}
+
+.sidebar-tools { padding: 10px; border-bottom: 1px solid #30363d; }
+.btn-back { width: 100%; padding: 8px; margin-bottom: 8px; background: #30363d; color: white; border: none; border-radius: 4px; cursor: pointer; }
+input { width: 100%; padding: 10px; box-sizing: border-box; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; }
+
+#list { flex: 1; overflow-y: auto; }
+.poke-item { padding: 12px 15px; border-bottom: 1px solid #21262d; cursor: pointer; font-size: 0.9rem; }
+.poke-item.active { background: #1c2128; border-left: 4px solid var(--accent); }
+
+/* --- DETALLE --- */
+.main { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 20px; overflow-y: auto; }
+
+.card {
+    background: var(--card);
+    padding: 25px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    border: 1px solid #30363d;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    margin-bottom: 40px;
+}
+
+.card img { width: 180px; height: 180px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
+
+.types { display: flex; justify-content: center; gap: 8px; margin: 15px 0; }
+.types span { padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; background: var(--type-bg); text-transform: uppercase; }
+
+.description { font-size: 0.9rem; color: #abb2bf; margin: 15px 0; line-height: 1.5; font-style: italic; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; }
+
+.section-title { font-size: 0.75rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin: 20px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 4px; }
+
+.evolution-box { background: #0d1117; padding: 12px; border-radius: 8px; font-size: 0.9rem; border: 1px dashed #444; color: #fff; }
+
+.stat-row { margin-bottom: 10px; text-align: left; }
+.stat-info { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 4px; }
+.bar { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; background: #4caf50; transition: width 0.8s ease; }
+
+.nav-btns { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
+.nav-btns button { padding: 10px 25px; border: none; background: #30363d; color: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="header-logo">
+    <img src="https://archives.bulbagarden.net/media/upload/4/4b/Pok%C3%A9dex_logo.png" alt="Pokedex" onclick="goHome()">
+</div>
+
+<div id="home" class="home">
+    <h2 style="margin-bottom:25px">Selecciona una Región</h2>
+    <div class="region-grid" id="regions"></div>
+</div>
+
+<div id="app" class="layout hidden">
+    <div class="sidebar">
+        <div class="sidebar-tools">
+            <button class="btn-back" onclick="goHome()">← <span>Regiones</span></button>
+            <input type="text" id="search" placeholder="Buscar Pokémon..." oninput="filterList(this.value)">
+        </div>
+        <div id="list"></div>
+    </div>
+    <div class="main">
+        <div id="card" class="card">Selecciona un Pokémon de la lista</div>
+    </div>
+</div>
+
+<script>
+const config = {
+    Kanto: [1, 151], Johto: [152, 251], Hoenn: [252, 386],
+    Sinnoh: [387, 493], Teselia: [494, 649], Kalos: [650, 721],
+    Alola: [722, 809], Galar: [810, 905], Paldea: [906, 1025]
+};
+
+const typeES = {fire:'fuego', water:'agua', grass:'planta', electric:'eléctrico', psychic:'psíquico', dragon:'dragón', ghost:'fantasma', dark:'siniestro', fairy:'hada', normal:'normal', fighting:'lucha', flying:'volador', poison:'veneno', ground:'tierra', rock:'roca', bug:'bicho', steel:'acero', ice:'hielo'};
+const statES = {hp:'PS', attack:'Ataque', defense:'Defensa', 'special-attack':'At. Esp.', 'special-defense':'Def. Esp.', speed:'Velocidad'};
+
+let state = { fullList: [], filtered: [], currentIndex: 0 };
+
+// Generar regiones
+Object.keys(config).forEach(name => {
+    const div = document.createElement('div');
+    div.className = 'region-card';
+    div.innerHTML = `<h3>${name}</h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${config[name][0]}.png" style="width:60px">`;
+    div.onclick = () => loadRegion(name);
+    document.getElementById('regions').appendChild(div);
+});
+
+// NUEVA FUNCIÓN DE LIMPIEZA DE NOMBRES PARA PALDEA
+function formatName(name) {
+    // Lista de palabras que NO debemos cortar porque son parte del nombre real (Paradojas)
+    const paradoxPrefixes = ['iron', 'scream', 'great', 'brute', 'flutter', 'slither', 'sandy', 'iron', 'roaring', 'walking', 'gouging', 'raging', 'iron', 'iron'];
+    
+    let parts = name.split('-');
+    
+    // Si la primera palabra es un prefijo de Paradoja, mantenemos las dos primeras palabras
+    if (paradoxPrefixes.includes(parts[0]) && parts.length > 1) {
+        return (parts[0] + ' ' + parts[1]).replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    // Para el resto, si tiene guion y la segunda parte es algo técnico (como "m", "f", "normal", "species") lo quitamos
+    const technicalTerms = ['species', 'normal', 'f', 'm', 'standard', 'aria'];
+    if (parts.length > 1 && technicalTerms.includes(parts[1])) {
+        return parts[0].replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    // Si no es nada de lo anterior, mostramos el nombre original reemplazando guiones por espacios
+    return name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+async function loadRegion(name) {
+    const [start, end] = config[name];
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('list').innerHTML = '<p style="padding:15px">Cargando...</p>';
+
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${end - start + 1}&offset=${start - 1}`);
+    const data = await res.json();
+    
+    state.fullList = data.results.map((p, i) => ({ 
+        id: start + i, 
+        name: formatName(p.name) 
+    }));
+    
+    state.filtered = [...state.fullList];
+    renderSidebar();
+}
+
+function renderSidebar() {
+    const listEl = document.getElementById('list');
+    listEl.innerHTML = '';
+    state.filtered.forEach((p, index) => {
+        const d = document.createElement('div');
+        d.className = 'poke-item';
+        d.innerHTML = `#${p.id} <strong>${p.name}</strong>`;
+        d.onclick = () => {
+            state.currentIndex = index;
+            showPokemon(p.id);
+            document.querySelectorAll('.poke-item').forEach(i => i.classList.remove('active'));
+            d.classList.add('active');
+        };
+        listEl.appendChild(d);
+    });
+}
+
+function filterList(val) {
+    const q = val.toLowerCase();
+    state.filtered = state.fullList.filter(p => p.name.toLowerCase().includes(q) || p.id.toString().includes(q));
+    renderSidebar();
+}
+
+function parseEvolution(chain, result = []) {
+    result.push(formatName(chain.species.name));
+    if (chain.evolves_to.length > 0) parseEvolution(chain.evolves_to[0], result);
+    return result;
+}
+
+async function showPokemon(id) {
+    const cardEl = document.getElementById('card');
+    cardEl.innerHTML = 'Consultando archivos...';
+
+    try {
+        const p = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(r => r.json());
+        const s = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then(r => r.json());
+        const e = await fetch(s.evolution_chain.url).then(r => r.json());
+        
+        const evoNames = parseEvolution(e.chain);
+        const desc = s.flavor_text_entries.find(entry => entry.language.name === 'es')?.flavor_text.replace(/\f/g, ' ') || "Sin descripción.";
+
+        const statsHtml = p.stats.map(s => `
+            <div class="stat-row">
+                <div class="stat-info"><span>${statES[s.stat.name] || s.stat.name}</span><span>${s.base_stat}</span></div>
+                <div class="bar"><div class="fill" style="width:${Math.min(s.base_stat, 100)}%"></div></div>
+            </div>
+        `).join('');
+
+        cardEl.innerHTML = `
+            <small>ID #${p.id}</small>
+            <h2 style="margin:8px 0">${formatName(p.name)}</h2>
+            <img src="${p.sprites.other['official-artwork'].front_default}" alt="${p.name}">
+            <div class="types">${p.types.map(t => `<span>${typeES[t.type.name] || t.type.name}</span>`).join('')}</div>
+            <div class="description">"${desc}"</div>
+            <div class="section-title">Línea Evolutiva</div>
+            <div class="evolution-box">${evoNames.join(' → ')}</div>
+            <div class="section-title">Estadísticas</div>
+            ${statsHtml}
+            <div class="nav-btns">
+                <button onclick="changePoke(-1)">Anterior</button>
+                <button onclick="changePoke(1)">Siguiente</button>
+            </div>
+        `;
+    } catch (err) {
+        cardEl.innerHTML = "Error al cargar.";
+    }
+}
+
+function changePoke(dir) {
+    let newIndex = state.currentIndex + dir;
+    if (newIndex >= 0 && newIndex < state.filtered.length) {
+        state.currentIndex = newIndex;
+        showPokemon(state.filtered[newIndex].id);
+    }
+}
+
+function goHome() {
+    document.getElementById('home').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+}
+</script>
+</body>
+</html>
